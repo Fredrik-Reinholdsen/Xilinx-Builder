@@ -1,4 +1,4 @@
-FROM ubuntu:lunar
+FROM ubuntu:kinetic
 
 WORKDIR /f4pga
 
@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y tzdata locales && rm -rf /var/lib/apt/l
 ENV LANG en_US.utf8
 
 RUN apt-get update && apt-get install -y git virtualenv \
-  python3 python3-pip python3-yaml cmake yosys libboost-all-dev libeigen3-dev
+  python3 python3-pip python3-yaml cmake yosys libboost-all-dev libeigen3-dev libboost-python-dev
 
 # Clone the project X-ray repository
 RUN git clone https://github.com/f4pga/prjxray.git
@@ -46,6 +46,7 @@ RUN cd /f4pga; \
 
 # Build part databases
 RUN cd /f4pga/nextpnr-xilinx; \
+	mv ./bba/bbasm .; \
 	python3 xilinx/python/bbaexport.py --device xc7z020clg400-1 --bba xilinx/xc7z020.bba; \
 	./bbasm --l xilinx/xc7z020.bba xilinx/xc7z020.bin; \
 	python3 xilinx/python/bbaexport.py --device xc7a35tcsg324-1 --bba xilinx/xc7a35t.bba; \
